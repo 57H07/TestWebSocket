@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controller\**" />
+    <Content Remove="Controller\**" />
+    <EmbeddedResource Remove="Controller\**" />
+    <None Remove="Controller\**" />
+  </ItemGroup>
+
+</Project>
