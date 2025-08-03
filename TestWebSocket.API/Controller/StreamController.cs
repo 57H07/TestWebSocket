@@ -66,11 +66,16 @@ namespace TestWebSocket.API.Controller
 
         private async Task<string> ReceiveMessage(Guid id, WebSocket webSocket)
         {
-            var arraySegment = new ArraySegment<byte>(new byte[4096]);
+            // Allocate a buffer for the incoming message and only decode the bytes that
+            // were actually received. The previous implementation decoded the entire
+            // buffer (filled with null characters) and relied on trimming, which could
+            // produce incorrect messages.
+            var buffer = new byte[4096];
+            var arraySegment = new ArraySegment<byte>(buffer);
             var receivedMessage = await webSocket.ReceiveAsync(arraySegment, CancellationToken.None);
             if (receivedMessage.MessageType == WebSocketMessageType.Text)
             {
-                var message = Encoding.Default.GetString(arraySegment).TrimEnd('\0');
+                var message = Encoding.UTF8.GetString(buffer, 0, receivedMessage.Count);
                 if (!string.IsNullOrWhiteSpace(message))
                     return $"<b>{id}</b>: {message}";
             }
@@ -88,7 +93,7 @@ namespace TestWebSocket.API.Controller
 
             var tasks = toSentTo.Select(async websocketConnection =>
             {
-                var bytes = Encoding.Default.GetBytes(message);
+                var bytes = Encoding.UTF8.GetBytes(message);
                 var arraySegment = new ArraySegment<byte>(bytes);
                 await websocketConnection.WebSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
             });
