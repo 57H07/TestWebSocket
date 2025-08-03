@@ -23,7 +23,7 @@ namespace TestWebSocket.ConsoleApp
             await clientWebSocket.ConnectAsync(new Uri("ws://localhost:60616/ws"), _cts.Token);
 
             // Listening new messages
-            _ = Task.Factory.StartNew(
+            _ = Task.Run(
                 async () =>
                 {
                     var rcvBuffer = new ArraySegment<byte>(_bufferSize);
@@ -34,7 +34,7 @@ namespace TestWebSocket.ConsoleApp
                         string rcvMsg = Encoding.UTF8.GetString(msgBytes);
                         Console.WriteLine("\nMessage received: {0}", rcvMsg);
                     }
-                }, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                }, _cts.Token);
 
             Console.Write("\nType in console to send messages :");
 
