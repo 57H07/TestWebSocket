@@ -22,7 +22,7 @@ namespace TestWebSocket.ConsoleApp
             ClientWebSocket clientWebSocket = new ClientWebSocket();
             await clientWebSocket.ConnectAsync(new Uri("ws://localhost:60616/ws"), _cts.Token);
 
-            // Listening new messages
+            // Listening for new messages
             _ = Task.Factory.StartNew(
                 async () =>
                 {
